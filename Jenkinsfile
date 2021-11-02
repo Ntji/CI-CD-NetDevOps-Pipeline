@@ -2,18 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage("Build_Prod") {
-            when { expression { env.BRANCH_NAME == 'master'} }
-            steps {
-                echo "Building Testing Lab!"
-                sh """
-                source /home/kamil/yetAnotherVirtualEnv/testing_env/bin/activate
-
-                """
-                //python3 /var/lib/jenkins/workspace/Hons_Project_master/eve_api.py -ip 192.168.78.148 -t /Uni2021/hons_prod.unl -u
-                //sleep 480
-            }
-        }
+        
         stage("Build_Dev") {
             when { expression { env.BRANCH_NAME == 'dev'} }
             steps {
@@ -26,16 +15,6 @@ pipeline {
                 //sleep 480
             }
         }
-        stage("Deploy_Prod") {
-            when { expression { env.BRANCH_NAME == 'master'} }
-            steps {
-                echo "Deploying Configuration To The Testing Lab"
-                sh """
-                source /home/kamil/yetAnotherVirtualEnv/testing_env/bin/activate
-                python3 /var/lib/jenkins/workspace/Hons_Project_master/NETCONF_jinja_push_prod.py
-                """
-            }
-        }
         stage("Deploy_Dev") {
             when { expression { env.BRANCH_NAME == 'dev'} }
             steps {
@@ -44,21 +23,6 @@ pipeline {
                 source /home/kamil/yetAnotherVirtualEnv/testing_env/bin/activate
                 python3 /var/lib/jenkins/workspace/Hons_Project_dev/NETCONF_jinja_push_test.py
                 """
-            }
-        }
-        stage("Test_Prod") {
-            when { expression { env.BRANCH_NAME == 'master'} }
-            steps {
-                echo "Testing The Deployed Configuration"
-                sh """
-                source /home/kamil/yetAnotherVirtualEnv/testing_env/bin/activate
-                python3 /home/kamil/Hons/test_interfaces.py
-                python3 /home/kamil/Hons/test_ospf.py
-                python3 /home/kamil/Hons/test_bgp.py
-                python3 /home/kamil/Hons/test_vpn.py
-
-                """
-                // python3 /var/lib/jenkins/workspace/Hons_Project_master/eve_api.py -ip 192.168.78.148 -t /Uni2021/hons_prod.unl -d
             }
         }
         stage("Test_Dev") {
